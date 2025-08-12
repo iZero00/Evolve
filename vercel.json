@@ -1,0 +1,84 @@
+{
+  "version": 2,
+  "name": "evolve-game",
+  "buildCommand": "npm run vercel-build",
+  "outputDirectory": ".",
+  "installCommand": "npm install",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "."
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/wiki",
+      "dest": "/wiki.html"
+    },
+    {
+      "src": "/save",
+      "dest": "/save.html"
+    },
+    {
+      "src": "/modern",
+      "dest": "/modern-demo.html"
+    },
+    {
+      "src": "/api/status",
+      "dest": "/api/status.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    },
+    {
+      "source": "/evolve/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    },
+    {
+      "source": "/lib/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    }
+  ],
+  "functions": {
+    "api/status.js": {
+      "runtime": "nodejs16.x"
+    }
+  }
+}

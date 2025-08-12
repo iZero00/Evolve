@@ -1,0 +1,268 @@
+/* Loading Optimizer para Evolve */
+
+/* Otimizações de carregamento */
+.loading-optimized {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease-out;
+}
+
+.loading-optimized.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Loading spinner otimizado */
+.loading-spinner {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+}
+
+.loading-spinner::before,
+.loading-spinner::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    animation: loading-pulse 2s ease-in-out infinite;
+}
+
+.loading-spinner::before {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #00d4ff, #ff6b6b);
+    animation-delay: 0s;
+}
+
+.loading-spinner::after {
+    width: 60%;
+    height: 60%;
+    background: linear-gradient(45deg, #0099cc, #ff4757);
+    top: 20%;
+    left: 20%;
+    animation-delay: 0.5s;
+}
+
+@keyframes loading-pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.7;
+    }
+}
+
+/* Progress bar de carregamento */
+.loading-progress {
+    width: 300px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+.loading-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #00d4ff, #ff6b6b);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+    animation: progress-glow 2s ease-in-out infinite;
+}
+
+@keyframes progress-glow {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+    }
+}
+
+/* Texto de carregamento */
+.loading-text {
+    color: #ffffff;
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-align: center;
+    margin: 10px 0;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.loading-subtext {
+    color: #cccccc;
+    font-size: 0.9rem;
+    text-align: center;
+    margin: 5px 0;
+}
+
+/* Otimizações de performance */
+.optimize-render {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.optimize-animation {
+    will-change: transform;
+}
+
+/* Reduzir movimento para acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .loading-spinner::before,
+    .loading-spinner::after {
+        animation: none;
+    }
+    
+    .loading-progress-bar {
+        animation: none;
+    }
+}
+
+/* Pausar animações quando a aba não está visível */
+.pause-animations * {
+    animation-play-state: paused !important;
+    transition: none !important;
+}
+
+/* Otimizações para dispositivos móveis */
+@media (max-width: 768px) {
+    .loading-spinner {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .loading-progress {
+        width: 250px;
+    }
+    
+    .loading-text {
+        font-size: 1rem;
+    }
+    
+    .loading-subtext {
+        font-size: 0.8rem;
+    }
+}
+
+/* Indicadores de carregamento específicos */
+.loading-step {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: step-fade-in 0.5s ease-out forwards;
+}
+
+.loading-step:nth-child(1) { animation-delay: 0.1s; }
+.loading-step:nth-child(2) { animation-delay: 0.2s; }
+.loading-step:nth-child(3) { animation-delay: 0.3s; }
+.loading-step:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes step-fade-in {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.step-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 10px;
+    background: #00d4ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: white;
+}
+
+.step-text {
+    color: #ffffff;
+    font-size: 0.9rem;
+}
+
+/* Loading completo */
+.loading-complete {
+    color: #00ff88;
+    font-weight: 600;
+    animation: complete-pulse 1s ease-in-out infinite;
+}
+
+@keyframes complete-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* Skeleton loading para conteúdo */
+.skeleton {
+    background: linear-gradient(90deg, 
+        rgba(255, 255, 255, 0.1) 25%, 
+        rgba(255, 255, 255, 0.2) 50%, 
+        rgba(255, 255, 255, 0.1) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 4px;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.skeleton-text {
+    height: 1em;
+    margin: 0.5em 0;
+}
+
+.skeleton-button {
+    height: 40px;
+    width: 120px;
+    margin: 0.5em;
+}
+
+/* Otimizações de carregamento de fontes */
+.font-loading {
+    font-display: swap;
+}
+
+/* Preload de recursos críticos */
+.preload-critical {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    z-index: -1;
+}
