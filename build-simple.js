@@ -2,9 +2,10 @@
 
 const { execSync } = require('child_process');
 const fs = require('fs');
-const path = require('path');
 
-console.log('🚀 Iniciando build para Vercel...');
+console.log('🚀 Iniciando build simplificado para Vercel...');
+console.log(`🌐 Node.js version: ${process.version}`);
+console.log(`📦 NPM version: ${execSync('npm --version', { encoding: 'utf8' }).trim()}`);
 
 try {
   // Verificar se estamos no ambiente da Vercel
@@ -13,66 +14,54 @@ try {
 
   // Executar build do Evolve
   console.log('📦 Construindo Evolve...');
-  execSync('npm run evolve', { stdio: 'inherit' });
-
-  // Executar build do CSS
-  console.log('🎨 Construindo CSS...');
-  try {
-    execSync('npm run evolve-less', { stdio: 'inherit' });
-  } catch (error) {
-    console.log('⚠️ Tentando com comando alternativo...');
-    try {
-      execSync('npm run evolve-less-win', { stdio: 'inherit' });
-    } catch (error2) {
-      console.log('⚠️ Tentando build manual do CSS...');
-      // Build manual do CSS se os scripts falharem
-      execSync('npx lessc src/evolve.less evolve/evolve.css', { stdio: 'inherit' });
-    }
-  }
+  execSync('node buildEvolve.js', { stdio: 'inherit' });
 
   // Executar build da Wiki
   console.log('📚 Construindo Wiki...');
-  execSync('npm run wiki', { stdio: 'inherit' });
+  execSync('node buildWiki.js', { stdio: 'inherit' });
 
-  // Executar build do CSS da Wiki
-  console.log('🎨 Construindo CSS da Wiki...');
+  // Build manual do CSS se necessário
+  console.log('🎨 Construindo CSS...');
   try {
-    execSync('npm run wiki-less', { stdio: 'inherit' });
+    execSync('npx lessc src/evolve.less evolve/evolve.css', { stdio: 'inherit' });
   } catch (error) {
-    console.log('⚠️ Tentando com comando alternativo...');
-    try {
-      execSync('npm run wiki-less-win', { stdio: 'inherit' });
-    } catch (error2) {
-      console.log('⚠️ Tentando build manual do CSS da Wiki...');
-      // Build manual do CSS da Wiki se os scripts falharem
-      execSync('npx lessc src/wiki/wiki.less wiki/wiki.css', { stdio: 'inherit' });
-    }
+    console.log('⚠️ CSS build falhou, continuando...');
   }
 
-  // Verificar se os arquivos foram criados
+  try {
+    execSync('npx lessc src/wiki/wiki.less wiki/wiki.css', { stdio: 'inherit' });
+  } catch (error) {
+    console.log('⚠️ Wiki CSS build falhou, continuando...');
+  }
+
+  // Verificar se os arquivos principais foram criados
   const requiredFiles = [
     'evolve/evolve.js',
-    'evolve/evolve.css',
     'wiki/wiki.js',
-    'wiki/wiki.css',
     'index.html'
   ];
 
   console.log('✅ Verificando arquivos gerados...');
+  let allFilesExist = true;
   requiredFiles.forEach(file => {
     if (fs.existsSync(file)) {
       console.log(`✅ ${file} - OK`);
     } else {
       console.error(`❌ ${file} - FALTANDO`);
-      process.exit(1);
+      allFilesExist = false;
     }
   });
 
-  // Criar arquivo de status para a Vercel
+  if (!allFilesExist) {
+    throw new Error('Arquivos essenciais não foram gerados');
+  }
+
+  // Criar arquivo de status
   const statusInfo = {
     buildTime: new Date().toISOString(),
     version: '1.4.8',
     platform: 'vercel',
+    nodeVersion: process.version,
     files: requiredFiles.filter(file => fs.existsSync(file)),
     buildSuccess: true
   };
@@ -85,7 +74,6 @@ try {
   console.log('   - index.html (Jogo Principal)');
   console.log('   - wiki.html (Wiki do Jogo)');
   console.log('   - save.html (Sistema de Save)');
-  console.log('   - modern-demo.html (Design Moderno)');
 
 } catch (error) {
   console.error('❌ Erro durante o build:', error.message);

@@ -1,12 +1,11 @@
 {
-  "buildTime": "2025-08-12T01:01:13.848Z",
+  "buildTime": "2025-08-12T01:05:57.893Z",
   "version": "1.4.8",
   "platform": "vercel",
+  "nodeVersion": "v16.6.1",
   "files": [
     "evolve/evolve.js",
-    "evolve/evolve.css",
     "wiki/wiki.js",
-    "wiki/wiki.css",
     "index.html"
   ],
   "buildSuccess": true
